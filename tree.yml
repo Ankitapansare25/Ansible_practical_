@@ -1,0 +1,10 @@
+  # Tree install 
+---
+ - name: install tree package
+   hosts: localhost
+   tasks:
+    - name: install tree
+      ansible.builtin.dnf:
+       name: tree 
+       state: present
+     
