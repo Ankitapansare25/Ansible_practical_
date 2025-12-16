@@ -1,5 +1,5 @@
 ---
-- name: install , start, enable httpd
+- name: install , start, enable nginx
   hosts: localhost
   become: yes # it assign sudo  privilages
   tasks:
@@ -7,18 +7,18 @@
   - name: install nginx
     ansible.builtin.dnf:
      name: nginx
-     state: absent
+     state: present
 
-     # start and enabled nginx
+     # start and enabled httpd
   - name: start and enabled nginx
     ansible.builtin.systemd_service:
      name: nginx
-     state: stopped
-     enabled: false
+     state: started
+     enabled: true
 
      # deploy index.html
   - name: deploy index.html file
     ansible.builtin.copy:
      dest: /usr/share/nginx/html/index.html
      content: |
-      <h1>welcome to my nginx website</h1>
+       <h1>welcome to my nginx website</h1>
