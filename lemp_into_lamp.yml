@@ -1,0 +1,68 @@
+---
+- name: convert into lemp to lamp
+  hosts: localhost
+  become: yes
+
+   # Define variable and assign value
+  vars:
+   web_pkg : nginx  # hard coding
+   db_pkg : mariadb105-server
+   new_pkg : httpd
+   php_pkg :
+    - php
+    - php-fpm
+
+   Web_service: nginx
+   db_service: mariadb
+   php_service: php-fpm
+   httpd_service: httpd
+   web_file_path: /var/www/html/index.php
+
+  tasks:
+
+    - name: Stop service nginx
+      ansible.builtin.systemd_service:
+       name: "{{Web_service}}"
+       state: stopped
+       enabled: false
+
+    - name : install httpd
+      ansible.builtin.dnf:
+       name: "{{new_pkg}}" #variable call
+       state: present
+
+    - name : install mariadb
+      ansible.builtin.dnf:
+       name: "{{db_pkg}}"    
+       state: present
+       
+    - name : install php
+      ansible.builtin.dnf:
+       name: "{{php_pkg}}" 
+       state: present
+     
+    - name : start and enable httpd
+      ansible.builtin.systemd_service:
+       name: "{{httpd_service}}"
+       state: started
+       enabled: true
+
+    - name : start and enable mariadb
+      ansible.builtin.systemd_service:
+       name: "{{db_service}}"
+       state: started
+       enabled: true
+   
+    - name : start and enable php-fpm
+      ansible.builtin.systemd_service:
+       name: "{{php_service}}"
+       state: started
+       enabled: true
+
+    - name : deploy php page
+      ansible.builtin.copy:
+       dest: "{{web_file_path}}"
+       content: |
+         <?php
+         phpinfo();
+         ?> 

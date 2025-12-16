@@ -9,7 +9,7 @@
      name: nginx
      state: absent
 
-     # start and enabled httpd
+     # start and enabled nginx
   - name: start and enabled nginx
     ansible.builtin.systemd_service:
      name: nginx
